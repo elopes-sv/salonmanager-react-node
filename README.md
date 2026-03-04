@@ -104,9 +104,19 @@ Detalhes de flags (`--force`, `--auto-password`, `--password`, `--name`) no [bac
 docker compose logs -f api
 ```
 
+### Erro `attempt to write a readonly database`
+
+- causa comum: arquivo `backend/data/app.db` criado como `root` por container;
+- o `docker-compose.yml` já roda com `user: "${UID:-1000}:${GID:-1000}"` para evitar isso;
+- se já aconteceu, apague os arquivos de banco e suba novamente:
+
+```bash
+rm -f backend/data/app.db backend/data/app.db-shm backend/data/app.db-wal
+```
+
 ### Frontend não autentica
 
-- confira `CORS_ORIGIN` no backend (deve incluir `http://localhost:5173`);
+- confira `CORS_ORIGIN` no backend (deve incluir `http://localhost:5173` e `http://127.0.0.1:5173`);
 - confira se backend está acessível em `http://localhost:4000/health`.
 
 ## Estrutura do projeto

@@ -5,6 +5,7 @@ import './LoginPage.css'
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const currentYear = new Date().getFullYear()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -132,7 +133,7 @@ export function LoginPage() {
       </main>
 
       <footer className="py-6 text-center text-xs text-slate-500">
-        <p>© 2024 SalonPro Manager. Todos os direitos reservados.</p>
+        <p>© {currentYear} SalonPro Manager. Todos os direitos reservados.</p>
         <div className="mt-2 flex justify-center gap-4">
           <Link className="hover:text-primary" to="/login">
             Política de Privacidade
