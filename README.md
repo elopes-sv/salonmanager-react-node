@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SalonManager (Frontend + API Local)
 
 ## Rodar local sem Docker
@@ -36,3 +37,6 @@ Observação:
 - Apenas admin pode gerenciar usuários e cadastrar serviços.
 - Serviços são compartilhados por todos; agendamentos são separados por usuário logado.
 - Redefinição de senha é feita apenas por administrador (módulo de usuários / endpoint admin).
+=======
+# salonmanager-react-node
+>>>>>>> origin/main
