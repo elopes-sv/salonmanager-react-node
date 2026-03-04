@@ -829,12 +829,12 @@ export function DashboardPage() {
                   <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-6 py-4">
                     <p className="text-sm text-slate-500">Mostrando {filteredAppointments.length} agendamentos</p>
                     <div className="flex gap-2">
-                      <button type="button" className="rounded-lg border border-slate-200 p-2 text-slate-400 opacity-50" disabled>
+                      <button type="button" className="flex items-center rounded-lg border border-slate-200 p-2 text-slate-400 opacity-50" disabled>
                         <span className="material-symbols-outlined">chevron_left</span>
                       </button>
                       <button
                         type="button"
-                        className="rounded-lg border border-slate-200 p-2 text-slate-400 transition-colors hover:text-slate-900"
+                        className="flex items-center rounded-lg border border-slate-200 p-2 text-slate-400 transition-colors hover:text-slate-900"
                       >
                         <span className="material-symbols-outlined">chevron_right</span>
                       </button>
@@ -915,7 +915,7 @@ export function DashboardPage() {
                 <div className="relative">
                   <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">spa</span>
                   <select
-                    className="w-full appearance-none rounded-lg border border-slate-200 bg-white py-3 pl-11 pr-10 text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
+                    className="w-full rounded-lg border border-slate-200 bg-white py-3 pl-11 pr-4 text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20"
                     disabled={isSaving}
                     value={formState.serviceId}
                     onChange={(event) => handleServiceChange(event.target.value)}
@@ -926,9 +926,6 @@ export function DashboardPage() {
                       </option>
                     ))}
                   </select>
-                  <span className="material-symbols-outlined pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">
-                    keyboard_arrow_down
-                  </span>
                 </div>
               </div>
 

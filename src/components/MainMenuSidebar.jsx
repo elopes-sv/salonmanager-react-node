@@ -4,8 +4,9 @@ import { hasAdminRole } from '../api/auth'
 const baseMenuItems = [
   { key: 'appointments', label: 'Agendamentos', icon: 'calendar_month', to: '/appointments' },
   { key: 'services', label: 'Serviços', icon: 'inventory_2', to: '/services' },
-  { key: 'settings', label: 'Configurações', icon: 'settings', to: '/settings/user' },
 ]
+
+const settingsMenuItem = { key: 'settings', label: 'Configurações', icon: 'settings', to: '/settings/user' }
 
 export function MainMenuSidebar({ active, mobileOpen = false, onClose, onNavigate }) {
   const isAdmin = hasAdminRole()
@@ -13,8 +14,9 @@ export function MainMenuSidebar({ active, mobileOpen = false, onClose, onNavigat
     ? [
         ...baseMenuItems,
         { key: 'users', label: 'Usuários', icon: 'group', to: '/users' },
+        settingsMenuItem,
       ]
-    : baseMenuItems
+    : [...baseMenuItems, settingsMenuItem]
 
   return (
     <aside

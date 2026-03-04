@@ -57,6 +57,61 @@ Parar containers:
 docker compose down
 ```
 
+## Telas e funcionalidades
+
+Use a pasta `docs/screens/` para salvar as imagens com os nomes abaixo.
+
+### Login
+
+- Autenticação por e-mail e senha.
+- Redirecionamento para troca de senha quando `mustChangePassword=true`.
+
+Imagem:
+
+![Tela de Login](docs/screens/login.png)
+
+### Agendamentos
+
+- Calendário mensal com seleção de dia.
+- Listagem de agendamentos do dia selecionado.
+- Criação, edição e remoção de agendamentos.
+- Exportação de dados (CSV/PDF).
+
+Imagem:
+
+![Tela de Agendamentos](docs/screens/appointments.png)
+
+### Serviços
+
+- Cadastro de serviços.
+- Edição e inativação de serviços.
+- Serviços ativos disponíveis para novos agendamentos.
+
+Imagem:
+
+![Tela de Serviços](docs/screens/services.png)
+
+### Usuários (admin)
+
+- Listagem de usuários do sistema.
+- Criação e edição de usuários (somente admin).
+- Ativação/inativação de contas.
+- Reset de senha por admin.
+
+Imagem:
+
+![Tela de Usuários](docs/screens/users.png)
+
+### Configurações do usuário
+
+- Edição de dados do perfil.
+- Alteração de senha do usuário autenticado.
+
+Imagem:
+
+![Tela de Configurações](docs/screens/settings.png)
+
+
 ## Primeira configuração de acesso (admin)
 
 Este sistema não tem auto-cadastro público.  
