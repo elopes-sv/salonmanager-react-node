@@ -314,6 +314,19 @@ app.get('/health', (_req, res) => {
   })
 })
 
+app.get('/', (_req, res) => {
+  res.json({
+    service: 'salonmanager-api',
+    status: 'ok',
+    message: 'API online.',
+    endpoints: {
+      health: '/health',
+      authLogin: '/auth/login',
+    },
+    now: new Date().toISOString(),
+  })
+})
+
 app.post('/auth/login', async (req, res) => {
   try {
     await cleanupExpiredAuthSessions()

@@ -1,42 +1,160 @@
-<<<<<<< HEAD
-# SalonManager (Frontend + API Local)
+# SalonManager React + Node
 
-## Rodar local sem Docker
+Sistema de gestão para salão com:
 
-1. API
+- Frontend: React + Vite
+- Backend: Node.js + Express
+- Banco local: SQLite (arquivo local)
+
+## Requisitos
+
+- Node.js 18+
+- npm 9+
+- Docker (opcional)
+
+## 1) Subir rápido em ambiente local
+
+### Instalar dependências
+
+```bash
+npm install
+npm --prefix backend install
+```
+
+### Iniciar backend (terminal 1)
 
 ```bash
 npm run dev:api
 ```
 
-2. Frontend
+### Iniciar frontend (terminal 2)
 
 ```bash
 npm run dev
 ```
 
-## Rodar com Docker Compose
-
-Subir frontend e backend juntos:
-
-```bash
-docker compose up
-```
-
-Acessos:
+### URLs
 
 - Frontend: `http://localhost:5173`
 - API: `http://localhost:4000`
 - Health check: `http://localhost:4000/health`
 
-Observação:
+## 2) Subir com Docker Compose
 
-- Não existe mais auto-cadastro público.
-- Quando o banco está vazio, a API cria um admin inicial (veja variáveis `BOOTSTRAP_ADMIN_*` em `backend/.env.example`).
-- Caso o admin perca acesso, use `npm run admin:reset-password -- --email ...` na raiz do projeto.
-- Apenas admin pode gerenciar usuários e cadastrar serviços.
-- Serviços são compartilhados por todos; agendamentos são separados por usuário logado.
-- Redefinição de senha é feita apenas por administrador (módulo de usuários / endpoint admin).
-=======
-# salonmanager-react-node
->>>>>>> origin/main
+```bash
+docker compose up
+```
+
+URLs:
+
+- Frontend: `http://localhost:5173`
+- API: `http://localhost:4000`
+- Health check: `http://localhost:4000/health`
+
+Parar containers:
+
+```bash
+docker compose down
+```
+
+## Primeira configuração de acesso (admin)
+
+Este sistema não tem auto-cadastro público.  
+O primeiro admin deve ser criado via CLI.
+
+### Criar primeiro administrador
+
+```bash
+npm run admin:create
+```
+
+Opcional com senha temporária automática:
+
+```bash
+npm run admin:create -- --auto-password
+```
+
+### Criar outro administrador
+
+Se já existir admin ativo, use `--force`:
+
+```bash
+npm run admin:create -- --force
+```
+
+Também pode passar nome/e-mail:
+
+```bash
+npm run admin:create -- --force --name "Administrador 2" --email admin2@salon.com
+```
+
+## Reset de senha de administrador (CLI)
+
+### Reset com prompt interativo
+
+```bash
+npm run admin:reset-password -- --email admin@salon.com
+```
+
+### Reset com senha temporária automática
+
+```bash
+npm run admin:reset-password -- --email admin@salon.com --auto-password
+```
+
+### Reset com senha definida manualmente
+
+```bash
+npm run admin:reset-password -- --email admin@salon.com --password "NovaSenhaForte123"
+```
+
+Comportamento do reset:
+
+- revoga sessões ativas do usuário;
+- força troca de senha no próximo login (`mustChangePassword=true`).
+
+## Scripts úteis (raiz)
+
+- `npm run dev`: frontend em desenvolvimento
+- `npm run dev:api`: backend em watch
+- `npm run start:api`: backend sem watch
+- `npm run build`: build do frontend
+- `npm run admin:create`: cria admin via CLI
+- `npm run admin:reset-password -- --email ...`: reset de senha de admin via CLI
+
+## Banco de dados (SQLite)
+
+- Arquivo padrão: `backend/data/app.db`
+- O arquivo é criado automaticamente ao iniciar o backend, se não existir.
+- Para resetar ambiente local:
+  - pare a API;
+  - remova `backend/data/app.db` (e `.db-wal`/`.db-shm` se existirem);
+  - inicie novamente.
+
+## Solução de problemas
+
+### API não responde em `localhost:4000`
+
+- local: confirme que o backend está rodando (`npm run dev:api`);
+- Docker: confirme `HOST=0.0.0.0` no `docker-compose.yml`;
+- veja logs:
+
+```bash
+docker compose logs -f api
+```
+
+### Frontend não autentica
+
+- confira `CORS_ORIGIN` no backend (deve incluir `http://localhost:5173`);
+- confira se backend está acessível em `http://localhost:4000/health`.
+
+## Estrutura do projeto
+
+- `src/`: frontend
+- `backend/src/`: API
+- `backend/tests/`: testes da API
+- `backend/data/`: banco SQLite local
+
+## Documentação da API
+
+Detalhes de endpoints, regras e contratos em [backend/README.md](backend/README.md).

@@ -3,8 +3,10 @@ dist
 .DS_Store
 .vscode
 backend/data/appointments.json
-backend/data/app.db
-backend/data/app.db-*
+backend/data/*.db
+backend/data/*.db-*
+data/*.db
+data/*.db-*
 backend/node_modules
 backend/.env
 .env

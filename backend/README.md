@@ -24,6 +24,11 @@ Servidor padrão: `http://localhost:4000`
 
 Banco local padrão: `backend/data/app.db`
 
+Endpoints básicos de verificação:
+
+- `GET /`
+- `GET /health`
+
 ## Criar administrador com segurança
 
 Com o banco vazio (ou usando `--force`), crie o admin via CLI:
@@ -36,6 +41,18 @@ Opcional (gerar senha temporária automaticamente):
 
 ```bash
 npm run admin:create -- --auto-password
+```
+
+Criar outro administrador quando já existe um ativo:
+
+```bash
+npm run admin:create -- --force
+```
+
+Criar outro admin já informando nome/e-mail:
+
+```bash
+npm run admin:create -- --force --name "Administrador 2" --email admin2@salon.com
 ```
 
 Fluxo:
@@ -74,12 +91,13 @@ Comportamento:
 ## Variáveis importantes
 
 - `AUTH_TOKEN_SECRET`: obrigatório em produção (use valor longo e aleatório).
-- `HOST`: em local, mantenha `127.0.0.1` para não expor a API na rede.
+- `HOST`: em local, mantenha `127.0.0.1` para não expor a API na rede. Em Docker, use `0.0.0.0`.
 - `AUTH_COOKIE_SECURE`: usar `true` em HTTPS.
 - `CORS_ORIGIN`: origem(s) permitidas separadas por vírgula.
 
 ## Endpoints
 
+- `GET /`
 - `GET /health`
 - `POST /auth/login`
 - `GET /auth/me`
