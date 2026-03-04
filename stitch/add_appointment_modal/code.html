@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add Appointment Modal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b8cee",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-overlay {
+            background-color: rgba(16, 25, 34, 0.7);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen font-display">
+<!-- Mock Dashboard Background (Dimmed) -->
+<div class="fixed inset-0 overflow-hidden flex flex-col pointer-events-none opacity-40 grayscale-[50%]">
+<header class="h-16 bg-white border-b flex items-center px-8 justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">content_cut</span>
+</div>
+<span class="font-bold text-slate-900">SalonFlow</span>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-slate-200"></div>
+</div>
+</header>
+<main class="p-8 flex-1">
+<div class="grid grid-cols-3 gap-6">
+<div class="h-32 bg-white rounded-xl shadow-sm"></div>
+<div class="h-32 bg-white rounded-xl shadow-sm"></div>
+<div class="h-32 bg-white rounded-xl shadow-sm"></div>
+<div class="col-span-2 h-96 bg-white rounded-xl shadow-sm"></div>
+<div class="h-96 bg-white rounded-xl shadow-sm"></div>
+</div>
+</main>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay backdrop-blur-sm">
+<!-- Modal Content Container -->
+<div class="bg-white dark:bg-slate-900 w-full max-w-[560px] rounded-xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+<!-- Modal Header -->
+<div class="px-8 pt-8 pb-4 flex justify-between items-center">
+<h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Add Appointment</h2>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Form Body -->
+<div class="px-8 py-4 space-y-6">
+<!-- Client Name -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Client Name</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">person</span>
+<input class="w-full pl-11 pr-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-400" placeholder="e.g. Sarah Johnson" type="text"/>
+</div>
+</div>
+<!-- Grid Row: Time & Service -->
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Time</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">schedule</span>
+<input class="w-full pl-11 pr-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" type="time" value="14:00"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Service</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">spa</span>
+<select class="w-full pl-11 pr-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none appearance-none transition-all">
+<option value="haircut">Classic Haircut</option>
+<option selected="" value="balayage">Balayage &amp; Styling</option>
+<option value="treatment">Keratin Treatment</option>
+<option value="color">Full Color</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Value ($) -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Value ($)</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">payments</span>
+<input class="w-full pl-11 pr-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-medium focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" type="number" value="185.00"/>
+</div>
+<p class="text-[11px] text-slate-500 italic mt-1">Based on "Balayage &amp; Styling" standard pricing.</p>
+</div>
+<!-- Notes -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Notes</label>
+<textarea class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none placeholder:text-slate-400" placeholder="Add any special requirements or client preferences..." rows="3"></textarea>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-8 py-8 flex gap-3">
+<button class="flex-1 py-3 px-4 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold transition-all shadow-lg shadow-primary/20">
+                    Save Appointment
+                </button>
+<button class="flex-1 py-3 px-4 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold transition-all">
+                    Cancel
+                </button>
+</div>
+<!-- Quick Suggestion Bar -->
+<div class="px-8 py-3 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2">
+<span class="text-[11px] font-bold text-primary uppercase tracking-wider">Recurring?</span>
+<div class="flex gap-2">
+<button class="text-[11px] px-2 py-1 rounded-full border border-slate-200 dark:border-slate-700 text-slate-500 hover:border-primary hover:text-primary transition-all">Weekly</button>
+<button class="text-[11px] px-2 py-1 rounded-full border border-slate-200 dark:border-slate-700 text-slate-500 hover:border-primary hover:text-primary transition-all">Bi-Weekly</button>
+<button class="text-[11px] px-2 py-1 rounded-full border border-slate-200 dark:border-slate-700 text-slate-500 hover:border-primary hover:text-primary transition-all">Monthly</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,153 @@
+/* Estilos específicos da página DashboardPage */
+
+.appointments-calendar .fc {
+  --fc-border-color: transparent;
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: transparent;
+  --fc-list-event-hover-bg-color: transparent;
+  font-family: 'Inter', sans-serif;
+}
+
+.appointments-calendar .fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 0.75rem;
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  align-items: center;
+}
+
+.appointments-calendar .fc .fc-toolbar-chunk {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.appointments-calendar .fc .fc-toolbar-chunk:first-child {
+  justify-content: flex-start;
+}
+
+.appointments-calendar .fc .fc-toolbar-chunk:last-child {
+  justify-content: flex-end;
+}
+
+.appointments-calendar .fc-toolbar-title {
+  color: #0f172a;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: capitalize;
+  letter-spacing: -0.01em;
+}
+
+.appointments-calendar .fc .fc-button-primary {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: #0f172a;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  padding: 8px;
+}
+
+.appointments-calendar .fc .fc-button-primary:hover {
+  background-color: #f1f5f9;
+  color: #020617;
+}
+
+.appointments-calendar .fc .fc-button-primary:not(:disabled).fc-button-active,
+.appointments-calendar .fc .fc-button-primary:not(:disabled):active,
+.appointments-calendar .fc .fc-button-primary:focus {
+  background-color: #e2e8f0;
+  color: #020617;
+  border: 0;
+  box-shadow: none;
+}
+
+.appointments-calendar .fc .fc-button-primary .fc-icon {
+  font-size: 24px;
+}
+
+.appointments-calendar .fc .fc-scrollgrid,
+.appointments-calendar .fc .fc-scrollgrid td,
+.appointments-calendar .fc .fc-scrollgrid th,
+.appointments-calendar .fc-theme-standard td,
+.appointments-calendar .fc-theme-standard th {
+  border: 0;
+}
+
+.appointments-calendar .fc .fc-col-header-cell {
+  padding: 0;
+}
+
+.appointments-calendar .fc .fc-col-header-cell-cushion {
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.35rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.appointments-calendar .fc .fc-daygrid-day {
+  padding: 0.12rem 0;
+}
+
+.appointments-calendar .fc .fc-daygrid-day-frame {
+  min-height: 38px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.appointments-calendar .fc .fc-daygrid-day-top {
+  justify-content: center;
+  width: 100%;
+}
+
+.appointments-calendar .fc .fc-daygrid-day-number {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  color: #0f172a;
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.appointments-calendar .fc .fc-daygrid-day-number:hover {
+  background-color: #f1f5f9;
+}
+
+.appointments-calendar .fc .fc-day-other .fc-daygrid-day-number {
+  color: #cbd5e1;
+}
+
+.appointments-calendar .fc .fc-daygrid-day.fc-day-past-custom .fc-daygrid-day-number {
+  color: #cbd5e1;
+}
+
+.appointments-calendar .fc .fc-daygrid-day.fc-day-past-custom .fc-daygrid-day-number:hover {
+  background-color: transparent;
+}
+
+.appointments-calendar .fc .fc-daygrid-day.fc-day-today {
+  background: transparent;
+}
+
+.appointments-calendar .fc .fc-daygrid-day.fc-day-selected-custom .fc-daygrid-day-number {
+  background-color: #2b8cee;
+  color: #ffffff;
+  box-shadow: 0 8px 14px -10px rgba(43, 140, 238, 0.8);
+}
+
+.appointments-calendar .fc .fc-daygrid-day-events,
+.appointments-calendar .fc .fc-daygrid-day-bottom {
+  display: none;
+}
