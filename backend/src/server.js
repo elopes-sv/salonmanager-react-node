@@ -1096,7 +1096,6 @@ initializeStore()
       console.warn('[api] AUTH_TOKEN_SECRET não definido. Usando segredo efêmero para esta execução.')
     }
 
-    // TODO(prod): publicar a API apenas atras de reverse proxy HTTPS, sem expor a porta interna diretamente.
     app.listen(port, host, () => {
       console.log(`[api] running at http://${host}:${port}`)
     })
