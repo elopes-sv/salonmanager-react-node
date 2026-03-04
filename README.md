@@ -62,56 +62,17 @@ docker compose down
 Este sistema não tem auto-cadastro público.  
 O primeiro admin deve ser criado via CLI.
 
-### Criar primeiro administrador
-
 ```bash
 npm run admin:create
 ```
 
-Opcional com senha temporária automática:
-
-```bash
-npm run admin:create -- --auto-password
-```
-
-### Criar outro administrador
-
-Se já existir admin ativo, use `--force`:
-
-```bash
-npm run admin:create -- --force
-```
-
-Também pode passar nome/e-mail:
-
-```bash
-npm run admin:create -- --force --name "Administrador 2" --email admin2@salon.com
-```
-
-## Reset de senha de administrador (CLI)
-
-### Reset com prompt interativo
+Para reset de senha de admin:
 
 ```bash
 npm run admin:reset-password -- --email admin@salon.com
 ```
 
-### Reset com senha temporária automática
-
-```bash
-npm run admin:reset-password -- --email admin@salon.com --auto-password
-```
-
-### Reset com senha definida manualmente
-
-```bash
-npm run admin:reset-password -- --email admin@salon.com --password "NovaSenhaForte123"
-```
-
-Comportamento do reset:
-
-- revoga sessões ativas do usuário;
-- força troca de senha no próximo login (`mustChangePassword=true`).
+Detalhes de flags (`--force`, `--auto-password`, `--password`, `--name`) no [backend/README.md](backend/README.md).
 
 ## Scripts úteis (raiz)
 
