@@ -94,6 +94,7 @@ Comportamento:
 - `HOST`: em local, mantenha `127.0.0.1` para não expor a API na rede. Em Docker, use `0.0.0.0`.
 - `AUTH_COOKIE_SECURE`: usar `true` em HTTPS.
 - `CORS_ORIGIN`: origem(s) permitidas separadas por vírgula.
+- `AUTH_MAX_TRACKED_LOGIN_KEYS`: limite de chaves em memória para proteção de login (default: `5000`).
 
 ## Endpoints
 
@@ -101,11 +102,13 @@ Comportamento:
 - `GET /health`
 - `POST /auth/login`
 - `GET /auth/me`
+- `PUT /auth/me`
 - `POST /auth/logout`
 - `POST /auth/change-password`
 - `GET /users` (admin)
 - `POST /users` (admin)
 - `PUT /users/:id` (admin)
+- `DELETE /users/:id` (admin)
 - `PATCH /users/:id/status` (admin)
 - `POST /users/:id/reset-password` (admin)
 - `GET /appointments`
@@ -120,7 +123,11 @@ Comportamento:
 ## Autenticação
 
 - `POST /auth/login` retorna `{ user }` e grava cookie `HttpOnly`.
+  - aceita `rememberMe` opcional no body:
+    - `true` (padrão): cookie persistente (`Max-Age`).
+    - `false`: cookie de sessão (expira ao encerrar o navegador).
 - `GET /auth/me` lê sessão do cookie (`credentials: include` no frontend).
+- `PUT /auth/me` atualiza nome/e-mail do usuário autenticado.
 - `POST /auth/logout` invalida a sessão ativa no servidor e limpa o cookie.
 - Todas as rotas de `appointments`, `services` e `users` exigem sessão ativa.
 - Rotas de `users` exigem papel `admin`.
@@ -129,6 +136,7 @@ Comportamento:
 - Cada usuário autenticado acessa apenas seus próprios agendamentos (`owner_id`).
 - Proteção anti força-bruta no login:
   - `code: "TOO_MANY_ATTEMPTS"` após muitas tentativas inválidas.
+  - inclui `retryAfterSeconds` no body e header HTTP `Retry-After`.
 - Cadastro público foi removido: novos usuários são criados apenas por administradores.
 - Usuário com `mustChangePassword=true` precisa trocar senha antes de acessar módulos do sistema.
 
@@ -156,6 +164,9 @@ Comportamento:
   - Retorno HTTP `403` com `code: "ACCOUNT_INACTIVE"`.
 - Não permite remover/inativar o último administrador ativo.
   - Retorno HTTP `409` com `code: "LAST_ADMIN_REQUIRED"`.
+- Ao excluir usuário, seus agendamentos também são removidos.
+- Não permite excluir o próprio usuário logado.
+  - Retorno HTTP `409` com `code: "SELF_DELETION_NOT_ALLOWED"`.
 - Redefinição de senha por admin revoga sessões ativas do usuário alvo.
 - Redefinição de senha por admin força troca de senha no próximo login.
 - Troca de senha (`/auth/change-password`) revoga sessões anteriores e renova a sessão atual.

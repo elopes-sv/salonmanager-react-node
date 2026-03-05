@@ -61,6 +61,10 @@ test('aplica regras de autenticação e usuário', { concurrency: false }, async
   const parsed = parseAccessToken(token)
   assert.equal(parsed.userId, createdUser.id)
   assert.equal(parsed.sessionId, sessionId)
+  assert.throws(
+    () => parseAccessToken(`${token}.extra`),
+    (error) => error instanceof Error && error.message === 'INVALID_TOKEN',
+  )
 
   const publicUser = await store.getUserPublicById(createdUser.id)
   assert.deepEqual(publicUser, createdUser)
@@ -84,6 +88,36 @@ test('aplica regras de autenticação e usuário', { concurrency: false }, async
   })
   assert.equal(updatedUser.name, 'Maria Souza')
   assert.equal(updatedUser.email, 'maria.souza@salon.com')
+
+  const deletableUser = await store.createUserRecord({
+    name: 'Usuária Excluir',
+    email: 'deletar@salon.com',
+    passwordHash: hashPassword('12345678'),
+    role: 'staff',
+  })
+
+  const supportService = await store.createServiceRecord({
+    name: 'Serviço de Teste Usuário',
+    durationMinutes: 30,
+    price: 60,
+    description: '',
+    isActive: true,
+  })
+
+  await store.createAppointmentRecord(deletableUser.id, {
+    client: 'Cliente Teste',
+    serviceId: supportService.id,
+    value: 60,
+    notes: '',
+    startAt: '2099-03-05T10:00:00.000Z',
+    endAt: '2099-03-05T10:30:00.000Z',
+  })
+
+  await store.deleteUserRecord(deletableUser.id)
+  const deletedUser = await store.getUserPublicById(deletableUser.id)
+  assert.equal(deletedUser, null)
+  const deletedUserAppointments = await store.listAppointmentRecords(deletableUser.id)
+  assert.equal(deletedUserAppointments.length, 0)
 
   const statusUpdated = await store.updateUserStatusRecord(createdUser.id, false)
   assert.equal(statusUpdated.isActive, false)

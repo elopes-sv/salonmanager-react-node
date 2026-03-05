@@ -1,92 +1,19 @@
-import { useEffect, useState } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext'
+import { useAuth } from './hooks/useAuth'
+import { ProtectedRoute } from './routes/ProtectedRoute'
+import { AdminRoute } from './routes/AdminRoute'
+import { PublicOnlyRoute } from './routes/PublicOnlyRoute'
+import { PasswordChangeRoute } from './routes/PasswordChangeRoute'
 import { LoginPage } from './pages/LoginPage/LoginPage'
 import { DashboardPage } from './pages/DashboardPage/DashboardPage'
 import { ServiceManagementPage } from './pages/ServiceManagementPage/ServiceManagementPage'
 import { UserSettingsPage } from './pages/UserSettingsPage/UserSettingsPage'
-import {
-  clearAuthSessionHint,
-  getCurrentUser,
-  hasAdminRole,
-  hasAuthSessionHint,
-  hasPasswordChangePending,
-} from './api/auth'
 import { UserManagementPage } from './pages/UserManagementPage/UserManagementPage'
 import { RequiredPasswordChangePage } from './pages/RequiredPasswordChangePage/RequiredPasswordChangePage'
 
-function getAuthenticatedHomePath() {
-  return hasPasswordChangePending() ? '/change-password' : '/appointments'
-}
-
-function ProtectedRoute({ children }) {
-  if (!hasAuthSessionHint()) {
-    return <Navigate to="/login" replace />
-  }
-
-  if (hasPasswordChangePending()) {
-    return <Navigate to="/change-password" replace />
-  }
-
-  return children
-}
-
-function PublicOnlyRoute({ children }) {
-  if (hasAuthSessionHint()) {
-    return <Navigate to={getAuthenticatedHomePath()} replace />
-  }
-
-  return children
-}
-
-function PasswordChangeRoute({ children }) {
-  if (!hasAuthSessionHint()) {
-    return <Navigate to="/login" replace />
-  }
-
-  if (!hasPasswordChangePending()) {
-    return <Navigate to="/appointments" replace />
-  }
-
-  return children
-}
-
-function AdminRoute({ children }) {
-  if (!hasAuthSessionHint()) {
-    return <Navigate to="/login" replace />
-  }
-
-  if (hasPasswordChangePending()) {
-    return <Navigate to="/change-password" replace />
-  }
-
-  if (!hasAdminRole()) {
-    return <Navigate to="/appointments" replace />
-  }
-
-  return children
-}
-
-export default function App() {
-  const [isSessionReady, setIsSessionReady] = useState(() => !hasAuthSessionHint())
-
-  useEffect(() => {
-    async function hydrateUser() {
-      if (!hasAuthSessionHint()) {
-        setIsSessionReady(true)
-        return
-      }
-
-      try {
-        await getCurrentUser()
-      } catch (_error) {
-        clearAuthSessionHint()
-      } finally {
-        setIsSessionReady(true)
-      }
-    }
-
-    void hydrateUser()
-  }, [])
+function AppRoutes() {
+  const { isSessionReady, isAuthenticated, mustChangePassword } = useAuth()
 
   if (!isSessionReady) {
     return (
@@ -95,6 +22,10 @@ export default function App() {
       </div>
     )
   }
+
+  const fallbackPath = isAuthenticated
+    ? mustChangePassword ? '/change-password' : '/appointments'
+    : '/login'
 
   return (
     <Routes>
@@ -150,7 +81,15 @@ export default function App() {
           </AdminRoute>
         }
       />
-      <Route path="*" element={<Navigate to={hasAuthSessionHint() ? getAuthenticatedHomePath() : '/login'} replace />} />
+      <Route path="*" element={<Navigate to={fallbackPath} replace />} />
     </Routes>
+  )
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   )
 }

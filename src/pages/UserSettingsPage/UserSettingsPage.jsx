@@ -1,28 +1,29 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AppShell } from '../../components/AppShell'
-import { changeCurrentPassword, clearAuthSessionHint, getCurrentUser, logoutUser } from '../../api/auth'
+import { useAuth } from '../../hooks/useAuth'
+import {
+  changeCurrentPassword,
+  clearAuthSessionHint,
+  getCurrentUser,
+  updateCurrentUserProfile,
+} from '../../api/auth'
+import { getErrorCode, getErrorMessage } from '../../api/errors'
 import './UserSettingsPage.css'
-
-function getErrorCode(error) {
-  if (error && typeof error === 'object' && 'code' in error && typeof error.code === 'string') {
-    return error.code
-  }
-
-  return ''
-}
 
 export function UserSettingsPage() {
   const navigate = useNavigate()
+  const { logout, updateUser } = useAuth()
   const [activeSection, setActiveSection] = useState('profile')
   const [profile, setProfile] = useState({
     name: '',
     email: '',
-    phone: '',
   })
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
+  const [profileError, setProfileError] = useState('')
   const [profileMessage, setProfileMessage] = useState('')
+  const [isProfileSubmitting, setIsProfileSubmitting] = useState(false)
 
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
@@ -40,11 +41,10 @@ export function UserSettingsPage() {
       setLoadError('')
       try {
         const user = await getCurrentUser()
-        setProfile((current) => ({
-          ...current,
+        setProfile({
           name: user.name,
           email: user.email,
-        }))
+        })
       } catch (error) {
         if (getErrorCode(error) === 'UNAUTHORIZED') {
           clearAuthSessionHint()
@@ -52,11 +52,7 @@ export function UserSettingsPage() {
           return
         }
 
-        if (error instanceof Error && error.message) {
-          setLoadError(error.message)
-        } else {
-          setLoadError('Não foi possível carregar seus dados.')
-        }
+        setLoadError(getErrorMessage(error, 'Não foi possível carregar seus dados.'))
       } finally {
         setIsLoading(false)
       }
@@ -66,15 +62,61 @@ export function UserSettingsPage() {
   }, [navigate])
 
   function handleFieldChange(field, value) {
+    setProfileError('')
+    setProfileMessage('')
     setProfile((current) => ({
       ...current,
       [field]: value,
     }))
   }
 
-  function handleProfileSubmit(event) {
+  async function handleProfileSubmit(event) {
     event.preventDefault()
-    setProfileMessage('A atualização de perfil será conectada no próximo passo do backend.')
+    setProfileError('')
+    setProfileMessage('')
+
+    const name = profile.name.trim()
+    const email = profile.email.trim().toLowerCase()
+
+    if (!name) {
+      setProfileError('Informe seu nome.')
+      return
+    }
+
+    if (!email) {
+      setProfileError('Informe seu e-mail.')
+      return
+    }
+
+    setIsProfileSubmitting(true)
+    try {
+      const updatedUser = await updateCurrentUserProfile({
+        name,
+        email,
+      })
+
+      setProfile({
+        name: updatedUser.name,
+        email: updatedUser.email,
+      })
+      updateUser(updatedUser)
+      setProfileMessage('Perfil atualizado com sucesso.')
+    } catch (error) {
+      if (getErrorCode(error) === 'UNAUTHORIZED') {
+        clearAuthSessionHint()
+        navigate('/login', { replace: true })
+        return
+      }
+
+      if (getErrorCode(error) === 'EMAIL_CONFLICT') {
+        setProfileError('Já existe uma conta com esse e-mail.')
+        return
+      }
+
+      setProfileError(getErrorMessage(error, 'Não foi possível atualizar o perfil.'))
+    } finally {
+      setIsProfileSubmitting(false)
+    }
   }
 
   async function handleSecuritySubmit(event) {
@@ -104,10 +146,11 @@ export function UserSettingsPage() {
 
     setIsSecuritySubmitting(true)
     try {
-      await changeCurrentPassword({
+      const updatedUser = await changeCurrentPassword({
         currentPassword,
         newPassword,
       })
+      updateUser(updatedUser)
       setCurrentPassword('')
       setNewPassword('')
       setConfirmPassword('')
@@ -122,18 +165,14 @@ export function UserSettingsPage() {
         return
       }
 
-      if (error instanceof Error && error.message) {
-        setSecurityError(error.message)
-      } else {
-        setSecurityError('Não foi possível atualizar a senha.')
-      }
+      setSecurityError(getErrorMessage(error, 'Não foi possível atualizar a senha.'))
     } finally {
       setIsSecuritySubmitting(false)
     }
   }
 
   async function handleLogout() {
-    await logoutUser()
+    await logout()
     navigate('/login', { replace: true })
   }
 
@@ -174,33 +213,17 @@ export function UserSettingsPage() {
 
           {!isLoading && !loadError && activeSection === 'profile' ? (
             <form className="space-y-6" onSubmit={handleProfileSubmit}>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-slate-700" htmlFor="full-name">
-                    Nome completo
-                  </label>
-                  <input
-                    id="full-name"
-                    type="text"
-                    value={profile.name}
-                    onChange={(event) => handleFieldChange('name', event.target.value)}
-                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-slate-700" htmlFor="phone">
-                    Telefone
-                  </label>
-                  <input
-                    id="phone"
-                    type="text"
-                    value={profile.phone}
-                    onChange={(event) => handleFieldChange('phone', event.target.value)}
-                    placeholder="(11) 99999-0000"
-                    className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary"
-                  />
-                </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-slate-700" htmlFor="full-name">
+                  Nome completo
+                </label>
+                <input
+                  id="full-name"
+                  type="text"
+                  value={profile.name}
+                  onChange={(event) => handleFieldChange('name', event.target.value)}
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary"
+                />
               </div>
 
               <div className="space-y-2">
@@ -216,7 +239,8 @@ export function UserSettingsPage() {
                 />
               </div>
 
-              {profileMessage ? <p className="text-sm font-medium text-primary">{profileMessage}</p> : null}
+              {profileError ? <p className="text-sm font-medium text-red-600">{profileError}</p> : null}
+              {profileMessage ? <p className="text-sm font-medium text-emerald-700">{profileMessage}</p> : null}
 
               <div className="flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
                 <Link
@@ -225,8 +249,12 @@ export function UserSettingsPage() {
                 >
                   Cancelar
                 </Link>
-                <button className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary/20 transition-all hover:bg-primary/90">
-                  Salvar alterações
+                <button
+                  type="submit"
+                  disabled={isProfileSubmitting}
+                  className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary/20 transition-all hover:bg-primary/90"
+                >
+                  {isProfileSubmitting ? 'Salvando...' : 'Salvar alterações'}
                 </button>
                 <button
                   type="button"

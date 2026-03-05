@@ -74,6 +74,10 @@ export async function updateUserStatus(id, isActive) {
   return payload
 }
 
+export async function removeUser(id) {
+  await requestData(() => apiClient.delete(`/users/${id}`), 'Não foi possível excluir o usuário.')
+}
+
 export async function resetUserPassword(id, password = '') {
   const payload = await requestData(
     () =>

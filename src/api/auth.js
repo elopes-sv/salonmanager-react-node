@@ -113,11 +113,13 @@ export function hasPasswordChangePending() {
 }
 
 export async function loginUser(input) {
+  const rememberMe = input.rememberMe !== false
   const payload = await requestData(
     () =>
       apiClient.post('/auth/login', {
         email: input.email,
         password: input.password,
+        rememberMe,
       }),
     'Não foi possível entrar na sua conta.',
   )
@@ -154,6 +156,22 @@ export async function logoutUser() {
 
 export async function getCurrentUser() {
   const payload = await requestData(() => apiClient.get('/auth/me'), 'Não foi possível carregar seu usuário.')
+  assertUser(payload)
+  setAuthenticatedHint()
+  setCurrentUserCache(payload)
+  return payload
+}
+
+export async function updateCurrentUserProfile(input) {
+  const payload = await requestData(
+    () =>
+      apiClient.put('/auth/me', {
+        name: input.name,
+        email: input.email,
+      }),
+    'Não foi possível atualizar seu perfil.',
+  )
+
   assertUser(payload)
   setAuthenticatedHint()
   setCurrentUserCache(payload)
