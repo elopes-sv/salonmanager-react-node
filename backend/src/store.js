@@ -727,6 +727,37 @@ export async function updateUserStatusRecord(id, isActive) {
   return updated
 }
 
+export async function deleteUserRecord(id) {
+  const database = getDb()
+  const safeId = typeof id === 'string' ? id.trim() : ''
+  if (!safeId) {
+    throw new Error('NOT_FOUND')
+  }
+
+  const existing = database
+    .prepare(`SELECT id, role, is_active AS isActive FROM users WHERE id = ?`)
+    .get(safeId)
+  if (!existing) {
+    throw new Error('NOT_FOUND')
+  }
+
+  if (existing.role === 'admin' && Boolean(existing.isActive)) {
+    const activeAdmins = database
+      .prepare(`SELECT COUNT(*) AS total FROM users WHERE role = 'admin' AND is_active = 1`)
+      .get()
+
+    if ((activeAdmins?.total || 0) <= 1) {
+      throw new Error('LAST_ADMIN_REQUIRED')
+    }
+  }
+
+  database
+    .transaction(() => {
+      database.prepare(`DELETE FROM appointments WHERE owner_id = ?`).run(safeId)
+      database.prepare(`DELETE FROM users WHERE id = ?`).run(safeId)
+    })()
+}
+
 export async function countActiveAdminUsers() {
   const database = getDb()
   const result = database

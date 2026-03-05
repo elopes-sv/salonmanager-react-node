@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { changeCurrentPassword, logoutUser } from '../../api/auth'
+import { useAuth } from '../../hooks/useAuth'
+import { changeCurrentPassword } from '../../api/auth'
 import './RequiredPasswordChangePage.css'
 
 export function RequiredPasswordChangePage() {
   const navigate = useNavigate()
+  const { logout, updateUser } = useAuth()
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -40,10 +42,11 @@ export function RequiredPasswordChangePage() {
 
     setIsSubmitting(true)
     try {
-      await changeCurrentPassword({
+      const updatedUser = await changeCurrentPassword({
         currentPassword,
         newPassword,
       })
+      updateUser(updatedUser)
       navigate('/appointments', { replace: true })
     } catch (error) {
       if (error instanceof Error && error.message) {
@@ -57,7 +60,7 @@ export function RequiredPasswordChangePage() {
   }
 
   async function handleLogout() {
-    await logoutUser()
+    await logout()
     navigate('/login', { replace: true })
   }
 

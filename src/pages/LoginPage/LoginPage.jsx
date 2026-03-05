@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { loginUser } from '../../api/auth'
+import { useAuth } from '../../hooks/useAuth'
 import './LoginPage.css'
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const { login } = useAuth()
   const currentYear = new Date().getFullYear()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const [formError, setFormError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -29,9 +31,10 @@ export function LoginPage() {
 
     setIsSubmitting(true)
     try {
-      const user = await loginUser({
+      const user = await login({
         email: normalizedEmail,
         password,
+        rememberMe,
       })
       navigate(user.mustChangePassword ? '/change-password' : '/appointments', { replace: true })
     } catch (error) {
@@ -112,6 +115,8 @@ export function LoginPage() {
                 id="remember"
                 className="h-4 w-4 cursor-pointer rounded border-slate-300 text-primary focus:ring-primary"
                 type="checkbox"
+                checked={rememberMe}
+                onChange={(event) => setRememberMe(event.target.checked)}
               />
               <label htmlFor="remember" className="cursor-pointer select-none text-sm text-slate-600">
                 Manter conectado

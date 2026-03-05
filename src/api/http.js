@@ -31,6 +31,12 @@ apiClient.interceptors.response.use(
       clearClientAuthState()
     }
 
+    if (status === 403 && code === 'PASSWORD_CHANGE_REQUIRED' && typeof window !== 'undefined') {
+      if (window.location.pathname !== '/change-password') {
+        window.location.replace('/change-password')
+      }
+    }
+
     return Promise.reject(error)
   },
 )

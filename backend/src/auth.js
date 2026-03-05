@@ -76,7 +76,12 @@ export function parseAccessToken(token) {
     throw new Error('INVALID_TOKEN')
   }
 
-  const [encodedPayload, signature] = token.split('.')
+  const tokenParts = token.split('.')
+  if (tokenParts.length !== 2) {
+    throw new Error('INVALID_TOKEN')
+  }
+
+  const [encodedPayload, signature] = tokenParts
   if (!encodedPayload || !signature) {
     throw new Error('INVALID_TOKEN')
   }

@@ -96,6 +96,7 @@ Imagem:
 - Listagem de usuários do sistema.
 - Criação e edição de usuários (somente admin).
 - Ativação/inativação de contas.
+- Exclusão de contas (remove também os agendamentos do usuário).
 - Reset de senha por admin.
 
 Imagem:
@@ -135,6 +136,7 @@ Detalhes de flags (`--force`, `--auto-password`, `--password`, `--name`) no [bac
 - `npm run dev:api`: backend em watch
 - `npm run start:api`: backend sem watch
 - `npm run build`: build do frontend
+- `npm run test:api`: executa os testes do backend
 - `npm run admin:create`: cria admin via CLI
 - `npm run admin:reset-password -- --email ...`: reset de senha de admin via CLI
 
