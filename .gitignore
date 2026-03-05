@@ -10,3 +10,5 @@ data/*.db-*
 backend/node_modules
 backend/.env
 .env
+/.agents
+/AGENTS.md
